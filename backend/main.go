@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 type CotacaoResponse struct {
@@ -72,7 +73,13 @@ func main() {
 		var dados []map[string]interface{}
 
 		if periodo == "1D" {
-			apiKey := "1aa9a88243f84779957a38415fd9fff7"
+
+			apiKey := os.Getenv("API_KEY")
+			if apiKey == "" {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "API key não configurada"})
+				return
+			}
+
 			url = "https://api.twelvedata.com/time_series?symbol=" + moedaDe + "/" + moedaPara + "&interval=1h&outputsize=24&apikey=" + apiKey
 
 			resp, err := http.Get(url)

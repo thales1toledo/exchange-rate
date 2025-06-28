@@ -17,8 +17,7 @@ function App() {
     useEffect(() => {
         const fetchHistorico = async () => {
             try {
-
-                axios.get(`${import.meta.env.VITE_API_URL}/historico`, {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/historico`, {
                     params: { de, para, periodo },
                 });
 
@@ -29,8 +28,8 @@ function App() {
                     .map((item) => {
                         const timestamp =
                             periodo === "1D"
-                                ? new Date(item.timestamp).getTime() // ex: "2025-06-28 08:00:00"
-                                : parseInt(item.timestamp) * 1000; // ex: "1751058943" (segundos)
+                                ? new Date(item.timestamp).getTime()
+                                : parseInt(item.timestamp) * 1000;
 
                         return {
                             timestamp,
@@ -44,7 +43,7 @@ function App() {
 
                         return true;
                     })
-                    .sort((a, b) => a.timestamp - b.timestamp); // Ordena por ordem crescente de timestamp
+                    .sort((a, b) => a.timestamp - b.timestamp);
 
                 setHistorico(dados);
 
