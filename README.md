@@ -19,3 +19,8 @@ Cotações via **AwesomeAPI** e **TwelveData**
 ---
 
 ## 🧱 Estrutura
+/frontend     # React + Tailwind (Vite)
+/backend      # API Go com Gin + chamadas externas
+
+
+https://exchange-rate-1.onrender.com/
