@@ -18,7 +18,7 @@ function App() {
         const fetchHistorico = async () => {
             try {
 
-                const res = await axios.get("http://localhost:8080/historico", {
+                axios.get(`${import.meta.env.VITE_API_URL}/historico`, {
                     params: { de, para, periodo },
                 });
 
@@ -62,7 +62,9 @@ function App() {
 
         setLoading(true);
         axios
-            .get(`http://localhost:8080/cotacao?de=${de}&para=${para}`)
+            .get(`${import.meta.env.VITE_API_URL}/cotacao`, {
+                params: { de, para },
+            })
             .then((res) => {
                 setCotacao(res.data.cotacao);
             })
