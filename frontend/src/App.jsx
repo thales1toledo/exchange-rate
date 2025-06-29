@@ -2,17 +2,60 @@ import React, {useState, useEffect} from "react";
 import axios from "axios";
 import "./App.css";
 import GraficoCotacao from "./GraficoCotacao.jsx";
+import Select from "react-select";
 
 function App() {
+
     const [de, setDe] = useState("USD");
     const [para, setPara] = useState("BRL");
     const [cotacao, setCotacao] = useState(null);
     const [loading, setLoading] = useState(false);
-
     const [periodo, setPeriodo] = useState("1D");
     const periodos = ["1D", "5D", "1M"];
-
     const [historico, setHistorico] = useState([]);
+
+    const opcoesMoeda = [
+        { value: 'BRL', label: 'BRL - Real Brasileiro' },
+        { value: 'USD', label: 'USD - Dólar Americano' },
+        { value: 'EUR', label: 'EUR - Euro' },
+        { value: 'GBP', label: 'GBP - Libra Esterlina' },
+        { value: 'JPY', label: 'JPY - Iene Japonês' },
+        { value: 'AUD', label: 'AUD - Dólar Australiano' },
+        { value: 'CHF', label: 'CHF - Franco Suíço' },
+        { value: 'CAD', label: 'CAD - Dólar Canadense' },
+        { value: 'CNY', label: 'CNY - Yuan Chinês' },
+        { value: 'ARS', label: 'ARS - Peso Argentino' },
+    ];
+
+    const customStyles = {
+        control: (base, state) => ({
+            ...base,
+            backgroundColor: '#1f2937',
+            borderColor: state.isFocused ? '#4b5563' : '#1f2937',
+            boxShadow: state.isFocused ? '0 0 0 2px #4b5563' : 'none',
+            color: '#fff',
+            borderRadius: '.5rem',
+            padding: '.5rem',
+            transition: 'all 0.2s ease-in-out',
+        }),
+        singleValue: (base) => ({
+            ...base,
+            color: '#fff',
+        }),
+        menu: (base) => ({
+            ...base,
+            backgroundColor: '#111827',
+            marginTop: 4,
+        }),
+        option: (base, { isFocused }) => ({
+            ...base,
+            backgroundColor: isFocused ? '#374151' : '#111827',
+            color: '#fff',
+            cursor: 'pointer',
+            padding: '10px 12px',
+        }),
+    };
+
 
     useEffect(() => {
         const fetchHistorico = async () => {
@@ -85,44 +128,22 @@ function App() {
 
                 <div className="mb-6">
                     <label className="block mb-2 text-sm font-medium tracking-wide">De</label>
-                    <select
-                        value={de}
-                        onChange={(e) => setDe(e.target.value)}
-                        className="w-full rounded-lg bg-white/10 px-4 py-3 border border-white/30 text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
-                    >
-                        <option value="USD">USD - Dólar Americano</option>
-                        <option value="EUR">EUR - Euro</option>
-                        <option value="GBP">GBP - Libra Esterlina</option>
-                        <option value="JPY">JPY - Iene Japonês</option>
-                        <option value="AUD">AUD - Dólar Australiano</option>
-                        <option value="CHF">CHF - Franco Suíço</option>
-                        <option value="CAD">CAD - Dólar Canadense</option>
-                        <option value="CNY">CNY - Yuan Chinês</option>
-                        <option value="ARS">ARS - Peso Argentino</option>
-                        <option value="TRY">TRY - Lira Turca</option>
-                        <option value="BRL">BRL - Real Brasileiro</option>
-                    </select>
+                    <Select
+                        value={opcoesMoeda.find((opt) => opt.value === de)}
+                        onChange={(opcao) => setDe(opcao.value)}
+                        options={opcoesMoeda}
+                        styles={customStyles}
+                    />
                 </div>
 
                 <div className="mb-8">
                     <label className="block mb-2 text-sm font-medium tracking-wide">Para</label>
-                    <select
-                        value={para}
-                        onChange={(e) => setPara(e.target.value)}
-                        className="w-full rounded-lg bg-white/10 px-4 py-3 border border-white/30 text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
-                    >
-                        <option value="BRL">BRL - Real Brasileiro</option>
-                        <option value="USD">USD - Dólar Americano</option>
-                        <option value="EUR">EUR - Euro</option>
-                        <option value="GBP">GBP - Libra Esterlina</option>
-                        <option value="JPY">JPY - Iene Japonês</option>
-                        <option value="AUD">AUD - Dólar Australiano</option>
-                        <option value="CHF">CHF - Franco Suíço</option>
-                        <option value="CAD">CAD - Dólar Canadense</option>
-                        <option value="CNY">CNY - Yuan Chinês</option>
-                        <option value="ARS">ARS - Peso Argentino</option>
-                        <option value="TRY">TRY - Lira Turca</option>
-                    </select>
+                    <Select
+                        value={opcoesMoeda.find((opt) => opt.value === para)}
+                        onChange={(opcao) => setPara(opcao.value)}
+                        options={opcoesMoeda}
+                        styles={customStyles}
+                    />
                 </div>
 
                 {loading ? (
