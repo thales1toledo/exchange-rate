@@ -21,9 +21,6 @@ function App() {
                     params: { de, para, periodo },
                 });
 
-                const agora = Date.now();
-                const ontem = agora - 24 * 60 * 60 * 1000;
-
                 const dados = res.data.dados
                     .map((item) => {
                         const timestamp =
@@ -35,13 +32,6 @@ function App() {
                             timestamp,
                             valor: parseFloat(item.valor),
                         };
-                    })
-                    .filter((item) => {
-                        if (periodo === "1D") {
-                            return item.timestamp >= ontem && item.timestamp <= agora;
-                        }
-
-                        return true;
                     })
                     .sort((a, b) => a.timestamp - b.timestamp);
 
