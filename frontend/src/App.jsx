@@ -3,9 +3,12 @@ import axios from "axios";
 import "./App.css";
 import GraficoCotacao from "./GraficoCotacao.jsx";
 import Select from "react-select";
+import { FiRepeat } from 'react-icons/fi';
+import { NumericFormat } from 'react-number-format';
 
 function App() {
 
+    const [valor, setValor] = useState(1);
     const [de, setDe] = useState("USD");
     const [para, setPara] = useState("BRL");
     const [cotacao, setCotacao] = useState(null);
@@ -56,7 +59,6 @@ function App() {
         }),
     };
 
-
     useEffect(() => {
         const fetchHistorico = async () => {
             try {
@@ -104,6 +106,12 @@ function App() {
             .finally(() => setLoading(false));
     }, [de, para]);
 
+    const trocarMoedas = () => {
+        const temp = de;
+        setDe(para);
+        setPara(temp);
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black flex items-center justify-center p-6">
             <div className="bg-black/40 backdrop-blur-md rounded-3xl shadow-2xl min-w-1/4 w-full max-w-md p-8 text-gray-100 border border-white/20">
@@ -126,32 +134,60 @@ function App() {
                     </p>
                 </div>
 
-                <div className="mb-6">
-                    <label className="block mb-2 text-sm font-medium tracking-wide">De</label>
-                    <Select
-                        value={opcoesMoeda.find((opt) => opt.value === de)}
-                        onChange={(opcao) => setDe(opcao.value)}
-                        options={opcoesMoeda}
-                        styles={customStyles}
-                    />
-                </div>
+                <div className="flex items-center justify-between mb-8">
+                    <div className="w-full">
+                        <label className="block mb-2 text-sm font-medium tracking-wide">De</label>
+                        <Select
+                            value={opcoesMoeda.find((opt) => opt.value === de)}
+                            onChange={(opcao) => setDe(opcao.value)}
+                            options={opcoesMoeda}
+                            styles={customStyles}
+                        />
+                    </div>
 
-                <div className="mb-8">
-                    <label className="block mb-2 text-sm font-medium tracking-wide">Para</label>
-                    <Select
-                        value={opcoesMoeda.find((opt) => opt.value === para)}
-                        onChange={(opcao) => setPara(opcao.value)}
-                        options={opcoesMoeda}
-                        styles={customStyles}
-                    />
+                    <button
+                        onClick={trocarMoedas}
+                        className="mx-4 p-2 mt-7 rounded-full bg-gray-700 hover:bg-gray-600 text-white hover:cursor-pointer"
+                        title="Trocar moedas"
+                    >
+                        <FiRepeat className="text-2xl" />
+                    </button>
+
+                    <div className="w-full">
+                        <label className="block mb-2 text-sm font-medium tracking-wide">Para</label>
+                        <Select
+                            value={opcoesMoeda.find((opt) => opt.value === para)}
+                            onChange={(opcao) => setPara(opcao.value)}
+                            options={opcoesMoeda}
+                            styles={customStyles}
+                        />
+                    </div>
                 </div>
 
                 {loading ? (
                     <p className="text-center text-indigo-300 font-medium animate-pulse">Carregando...</p>
                 ) : cotacao ? (
                     <>
+                        <div className="mb-6">
+                            <label className="block mb-2 text-sm font-medium tracking-wide">Valor</label>
+                            <NumericFormat
+                                value={valor}
+                                onValueChange={(values) => {
+                                    if (values.floatValue !== undefined) {
+                                        setValor(values.floatValue);
+                                    }
+                                }}
+                                thousandSeparator="."
+                                decimalSeparator=","
+                                allowNegative={false}
+                                allowLeadingZeros={false}
+                                isNumericString
+                                className="w-full bg-white/10 text-gray-100 border border-white/20 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-600"
+                            />
+                        </div>
+
                         <p className="text-center text-2xl font-semibold drop-shadow-md">
-                            1 {de} = {parseFloat(cotacao).toFixed(2)} {para}
+                            {valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} {de} = {(parseFloat(cotacao) * valor).toLocaleString('pt-BR', { maximumFractionDigits: 2 })} {para}
                         </p>
 
                         <div className="flex flex-wrap gap-2 justify-center mt-6">
