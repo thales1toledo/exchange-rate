@@ -3,7 +3,7 @@ import axios from "axios";
 import "./App.css";
 import GraficoCotacao from "./GraficoCotacao.jsx";
 import Select from "react-select";
-import { FiRepeat } from 'react-icons/fi';
+import { GoArrowSwitch } from "react-icons/go";
 import { NumericFormat } from 'react-number-format';
 
 function App() {
@@ -114,7 +114,7 @@ function App() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black flex items-center justify-center p-6">
-            <div className="bg-black/40 backdrop-blur-md rounded-3xl shadow-2xl min-w-1/4 w-full max-w-md p-8 text-gray-100 border border-white/20">
+            <div className="bg-black/40 backdrop-blur-md rounded-3xl shadow-2xl min-w-1/3 w-full max-w-md p-8 text-gray-100 border border-white/20">
 
                 <div className="d-flex flex-col gap-3">
 
@@ -134,7 +134,7 @@ function App() {
                     </p>
                 </div>
 
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex flex-col items-center justify-between mb-8">
                     <div className="w-full">
                         <label className="block mb-2 text-sm font-medium tracking-wide">De</label>
                         <Select
@@ -150,7 +150,7 @@ function App() {
                         className="mx-4 p-2 mt-7 rounded-full bg-gray-700 hover:bg-gray-600 text-white hover:cursor-pointer"
                         title="Trocar moedas"
                     >
-                        <FiRepeat className="text-2xl" />
+                        <GoArrowSwitch className="text-2xl rotate-90" />
                     </button>
 
                     <div className="w-full">
