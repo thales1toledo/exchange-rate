@@ -2,12 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"os"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 type CotacaoResponse struct {
@@ -17,7 +17,7 @@ type CotacaoResponse struct {
 }
 
 func main() {
-	
+
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
@@ -76,13 +76,7 @@ func main() {
 
 		if periodo == "1D" {
 
-			apiKey := os.Getenv("API_KEY")
-			if apiKey == "" {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "API key não configurada"})
-				return
-			}
-
-			url = "https://api.twelvedata.com/time_series?symbol=" + moedaDe + "/" + moedaPara + "&interval=1h&outputsize=24&apikey=" + apiKey
+			url = "https://economia.awesomeapi.com.br/" + moedaDe + "-" + moedaPara + "/360"
 
 			resp, err := http.Get(url)
 			if err != nil {
@@ -99,21 +93,18 @@ func main() {
 
 			body, _ := ioutil.ReadAll(resp.Body)
 
-			var response map[string]interface{}
+			var response []map[string]interface{}
 			if err := json.Unmarshal(body, &response); err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao interpretar resposta da TwelveData"})
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao interpretar resposta da AwesomeAPI"})
 				return
 			}
 
-			if values, ok := response["values"].([]interface{}); ok {
-				for _, item := range values {
-					if entry, ok := item.(map[string]interface{}); ok {
-						dados = append(dados, map[string]interface{}{
-							"timestamp": entry["datetime"],
-							"valor":     entry["close"],
-						})
-					}
-				}
+			for i := len(response) - 1; i >= 0; i-- {
+				item := response[i]
+				dados = append(dados, map[string]interface{}{
+					"timestamp": item["timestamp"],
+					"valor":     item["bid"],
+				})
 			}
 		} else {
 			dias := map[string]string{
@@ -159,7 +150,7 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"dados": dados})
 	})
 
-	err := router.Run(":8080")
+	err := router.Run(":8081")
 	if err != nil {
 		return
 	}
